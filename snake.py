@@ -34,9 +34,13 @@ def Your_score(score):
  
  
  
-def our_snake(snake_block, snake_list):
+def our_snake(snake_block, snake_list, snake_color,snake_sparkle):
     for x in snake_list:
-        pygame.draw.rect(dis, black, [x[0], x[1], snake_block, snake_block])
+        if snake_sparkle:
+            rand_color = random.choices(range(256), k=3) 
+            pygame.draw.rect(dis, rand_color, [x[0], x[1], snake_block, snake_block])
+        else: 
+            pygame.draw.rect(dis, snake_color, [x[0], x[1], snake_block, snake_block])
  
  
 def message(msg, color):
@@ -46,6 +50,7 @@ def message(msg, color):
  
 def gameLoop():
     speed = snake_speed
+    purple_duration = 0
 
     game_over = False
     game_close = False
@@ -58,7 +63,7 @@ def gameLoop():
  
     snake_List = []
     Length_of_snake = 1
- 
+    snake_color = black
 
     foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
@@ -121,20 +126,33 @@ def gameLoop():
             if x == snake_Head:
                 game_close = True
  
-        our_snake(snake_block, snake_List)
+
+        sparkling = purple_duration > 40
+
+        our_snake(snake_block, snake_List, snake_color, sparkling)
         Your_score(Length_of_snake - 1)
  
         pygame.display.update()
  
+        if purple_duration > 60:
+            snake_color = black
+            purple_duration = 0
+
+        if snake_color == purple:
+            purple_duration += 1
+
         if x1 == foodx and y1 == foody:
             foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
             foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
             Length_of_snake += 2
+            snake_color = black
  
         if x1 == foodx2 and y1 == foody2:
             foodx2 = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
             foody2 = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
             Length_of_snake -= 1
+            snake_color = purple
+
 
         clock.tick(speed)
  
